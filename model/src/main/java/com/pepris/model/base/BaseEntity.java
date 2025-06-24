@@ -1,4 +1,4 @@
-package com.pepris.system.base;
+package com.pepris.model.base;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableLogic;

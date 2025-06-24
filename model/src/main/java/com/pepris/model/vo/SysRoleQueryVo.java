@@ -1,6 +1,6 @@
 //
 //
-package com.pepris.system.vo;
+package com.pepris.model.vo;
 
 import java.io.Serializable;
 
@@ -9,8 +9,8 @@ import java.io.Serializable;
  * 角色查询实体
  * </p>
  *
- * @author qy
- * @since 2019-11-08
+ * @author hs
+ * @since 2025-06-24
  */
 public class SysRoleQueryVo implements Serializable {
 	

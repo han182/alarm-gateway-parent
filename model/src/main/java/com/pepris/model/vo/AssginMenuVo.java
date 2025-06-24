@@ -1,4 +1,4 @@
-package com.pepris.system.vo;
+package com.pepris.model.vo;
 
 
 import io.swagger.annotations.ApiModel;

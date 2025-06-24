@@ -1,8 +1,8 @@
-package com.pepris.system.system;
+package com.pepris.model.system;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.pepris.system.base.BaseEntity;
+import com.pepris.model.base.BaseEntity;
 import lombok.Data;
 
 

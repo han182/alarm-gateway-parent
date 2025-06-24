@@ -1,6 +1,6 @@
 //
 //
-package com.pepris.system.vo;
+package com.pepris.model.vo;
 
 
 import lombok.Data;
