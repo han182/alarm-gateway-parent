@@ -18,6 +18,7 @@ public class SysUserQueryVo implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	private String keyword;
+	private String userName;
 
 	private String createTimeBegin;
 	private String createTimeEnd;
