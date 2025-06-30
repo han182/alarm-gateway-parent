@@ -97,11 +97,11 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
         List<SysRoleMenu> sysRoleMenuList = sysRoleMenuMapper.selectList(sysRoleMenuStatus);
 
         //从第二步查询的列表中，获取角色分配的所有菜单的id select menu_id from sys_role_menu t where role_id='2'
-        List<Long> sysRoleMenuIds = new ArrayList<>();
+        List<String> sysRoleMenuIds = new ArrayList<>();
         //遍历第二步查出的集合，取到菜单id,把取到的id放到sysRoleMenuIds中
         for (SysRoleMenu sysRoleMenu : sysRoleMenuList) {
             String menuId = sysRoleMenu.getMenuId();
-            sysRoleMenuIds.add(Long.parseLong(menuId));
+            sysRoleMenuIds.add(menuId);
         }
 
 
