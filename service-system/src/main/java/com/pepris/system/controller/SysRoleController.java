@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.pepris.common.result.Result;
+import com.pepris.model.vo.AssginRoleVo;
 import com.pepris.model.vo.SysRoleQueryVo;
 import com.pepris.system.service.SysRoleService;
 import com.pepris.model.system.SysRole;
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @Api(tags = "角色管理")
 @RestController
@@ -41,41 +43,44 @@ public class SysRoleController {
 
     @ApiOperation(value = "获取角色")
     @GetMapping("/get/{id}")
-    public Result get(@PathVariable Long id){
+    public Result get(@PathVariable Long id) {
         SysRole role = sysRoleService.getById(id);
         return Result.ok(role);
-   }
+    }
+
     @ApiOperation(value = "新增角色")
     @PostMapping("/save")
-    public Result save(@RequestBody SysRole sysRole){
+    public Result save(@RequestBody SysRole sysRole) {
         sysRoleService.save(sysRole);
         return Result.ok();
     }
 
     @ApiOperation(value = "修改角色")
     @PostMapping("/update")
-    public Result update(@RequestBody SysRole sysRole){
+    public Result update(@RequestBody SysRole sysRole) {
         sysRoleService.updateById(sysRole);
         return Result.ok();
     }
+
     @ApiOperation(value = "删除角色")
     @PostMapping("/remove/{id}")
-    public Result delete(@PathVariable Long id){
+    public Result delete(@PathVariable Long id) {
         boolean b = sysRoleService.removeById(id);
-        if(b){
+        if (b) {
             return Result.ok();
-        }else {
+        } else {
             return Result.fail();
         }
 
     }
+
     @ApiOperation(value = "根据ID列表删除")
     @PostMapping("/batchRemove")
-    public Result batchDelete(@RequestBody List<Long> ids){
+    public Result batchDelete(@RequestBody List<Long> ids) {
         boolean b = sysRoleService.removeByIds(ids);
-        if(b){
+        if (b) {
             return Result.ok();
-        }else {
+        } else {
             return Result.fail();
         }
     }
@@ -113,16 +118,31 @@ public class SysRoleController {
             Long page,
             @ApiParam(name = "limit", value = "每页记录数", required = false)
             @PathVariable Long limit,
-            @ApiParam(name = "sysRoleQueryVo",value = "查询对象",required = true)
+            @ApiParam(name = "sysRoleQueryVo", value = "查询对象", required = true)
             SysRoleQueryVo sysRoleQueryVo) {
 
         //创建配置对象
         Page<SysRole> pageParam = new Page<>(page, limit);
         //调用service方法
-        IPage<SysRole> pageModel=sysRoleService.selectPage(pageParam,sysRoleQueryVo);
+        IPage<SysRole> pageModel = sysRoleService.selectPage(pageParam, sysRoleQueryVo);
         return Result.ok(pageModel);
 
 
+    }
+
+    @ApiOperation("获取用户的角色数据")
+    @GetMapping("toAssign/{userId}")
+    public Result toAssign(@PathVariable String userId) {
+        // TODO
+        Map<String, Object> roleMap = sysRoleService.getRolesByUserId(Long.parseLong(userId));
+        return Result.ok(roleMap);
+
+    }
+    @ApiOperation("给用户分配角色")
+    @PostMapping("/doAssign")
+    public Result doAssign(@RequestBody AssginRoleVo assginRoleVo) {
+        sysRoleService.doAssign(assginRoleVo);
+        return Result.ok();
     }
 
 }

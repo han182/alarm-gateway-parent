@@ -17,7 +17,11 @@ import com.pepris.model.vo.SysUserQueryVo;
  * @since 2025-06-29
  */
 public interface SysUserService extends IService<SysUser> {
+    // 用户列表
     IPage<SysUser> selectPage(Page<SysUser> pageParam, SysUserQueryVo userQueryVo);
+
+    //更改用户状态
+    void updateStatus(Long id,Integer status);
 
 
 }

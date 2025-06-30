@@ -40,24 +40,24 @@ public class SysUserController {
             Long page,
             @ApiParam(name = "limit", value = "每页记录数", required = false)
             @PathVariable Long limit,
-            @ApiParam(name = "sysUserQueryVo",value = "查询对象",required = true)
+            @ApiParam(name = "sysUserQueryVo", value = "查询对象", required = true)
             SysUserQueryVo sysUserQueryVo) {
 
         //创建配置对象
         Page<SysUser> pageParam = new Page<>(page, limit);
         //调用service方法
-        IPage<SysUser> pageModel=sysUserService.selectPage(pageParam,sysUserQueryVo);
+        IPage<SysUser> pageModel = sysUserService.selectPage(pageParam, sysUserQueryVo);
         return Result.ok(pageModel);
 
     }
 
     @ApiOperation(value = "新增用户")
     @PostMapping("/save")
-    public Result save(@RequestBody SysUser sysUser){
+    public Result save(@RequestBody SysUser sysUser) {
         boolean b = sysUserService.save(sysUser);
-        if(b){
+        if (b) {
             return Result.ok();
-        }else {
+        } else {
             return Result.fail();
         }
     }
@@ -65,37 +65,46 @@ public class SysUserController {
     // 用于修改
     @ApiOperation(value = "根据ID获取用户")
     @GetMapping("/get/{id}")
-    public Result get(@PathVariable Long id){
+    public Result get(@PathVariable Long id) {
         SysUser user = sysUserService.getById(id);
         return Result.ok(user);
     }
 
     @ApiOperation(value = "修改用户信息")
     @PostMapping("/update")
-    public Result update(@RequestBody SysUser sysUser){
+    public Result update(@RequestBody SysUser sysUser) {
         sysUserService.updateById(sysUser);
         return Result.ok();
     }
+
     @ApiOperation(value = "删除用户")
     @PostMapping("/remove/{id}")
-    public Result delete(@PathVariable Long id){
+    public Result delete(@PathVariable Long id) {
         boolean b = sysUserService.removeById(id);
-        if(b){
+        if (b) {
             return Result.ok();
-        }else {
+        } else {
             return Result.fail();
         }
 
     }
+
     @ApiOperation(value = "根据ID列表删除")
     @PostMapping("/batchRemove")
-    public Result batchDelete(@RequestBody List<Long> ids){
+    public Result batchDelete(@RequestBody List<Long> ids) {
         boolean b = sysUserService.removeByIds(ids);
-        if(b){
+        if (b) {
             return Result.ok();
-        }else {
+        } else {
             return Result.fail();
         }
+    }
+
+    @ApiOperation(value = "修改用户状态")
+    @PostMapping("/updateStatus/{id}/{status}")
+    public Result updateStatus(@PathVariable Long id, @PathVariable Integer status) {
+        sysUserService.updateStatus(id,status);
+        return Result.ok();
     }
 }
 
