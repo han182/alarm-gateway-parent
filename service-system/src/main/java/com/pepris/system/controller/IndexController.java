@@ -1,11 +1,15 @@
 package com.pepris.system.controller;
 
 import com.pepris.common.result.Result;
+import com.pepris.common.utils.JwtHelper;
+import com.pepris.common.utils.MD5;
+import com.pepris.model.system.SysUser;
+import com.pepris.model.vo.LoginVo;
+import com.pepris.system.exception.HansException;
+import com.pepris.system.service.SysUserService;
 import io.swagger.annotations.Api;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,24 +20,45 @@ import java.util.Map;
 @Api(tags = "用户登录接口")
 public class IndexController {
 
+    @Autowired
+    private SysUserService sysUserService;
+
     @PostMapping("/login")
-    public Result login(){
+    public Result login(@RequestBody LoginVo loginVo) {
+        //根据用户名查询数据库
+        SysUser sysUser = sysUserService.getUserInfoByName(loginVo.getUsername());
+        //如果查询数据为空，提示用户不存在
+        if (sysUser == null) {
+            throw new HansException(20001, "用户不存在");
+        }
+        //判断密码是否正确
+        String password = loginVo.getPassword();
+        String md5Password = MD5.encrypt(password);
+        if (!sysUser.getPassword().equals(md5Password)) {
+            throw new HansException(20001, "密码错误");
+        }
+        //判断用户状态，是否可用
+        if (sysUser.getStatus() == 0) {
+            throw new HansException(20001, "用户已被禁用");
+        }
+        //根据用户id和名称生成token字符串，通过map进行返回
+        String token = JwtHelper.createToken(Long.parseLong(sysUser.getId()), loginVo.getUsername());
         Map<String, Object> map = new HashMap<>();
-        map.put("token", "admin-token-hs");
+        map.put("token", token);
         return Result.ok(map);
     }
 
     @GetMapping("/info")
-    public Result info(){
+    public Result info() {
         Map<String, Object> map = new HashMap<>();
-        map.put("roles","[admin]");
-        map.put("name","admin hs");
-        map.put("avatar","https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif");
+        map.put("roles", "[admin]");
+        map.put("name", "admin hs");
+        map.put("avatar", "https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif");
         return Result.ok(map);
     }
 
     @PostMapping("/logout")
-    public Result logout(){
+    public Result logout() {
         return Result.ok();
     }
 

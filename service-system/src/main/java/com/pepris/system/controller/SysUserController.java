@@ -4,6 +4,7 @@ package com.pepris.system.controller;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.pepris.common.result.Result;
+import com.pepris.common.utils.MD5;
 import com.pepris.model.system.SysUser;
 import com.pepris.model.vo.SysUserQueryVo;
 import com.pepris.system.mapper.SysUserMapper;
@@ -54,6 +55,9 @@ public class SysUserController {
     @ApiOperation(value = "新增用户")
     @PostMapping("/save")
     public Result save(@RequestBody SysUser sysUser) {
+        //把输入的密码进行MD5加密
+        String encrypt = MD5.encrypt(sysUser.getPassword());
+        sysUser.setPassword(encrypt);
         boolean b = sysUserService.save(sysUser);
         if (b) {
             return Result.ok();
