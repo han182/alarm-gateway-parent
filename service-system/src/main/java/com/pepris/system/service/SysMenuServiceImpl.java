@@ -3,8 +3,11 @@ package com.pepris.system.service;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.pepris.model.system.SysMenu;
+import com.pepris.model.system.SysRoleMenu;
+import com.pepris.model.vo.AssginMenuVo;
 import com.pepris.system.exception.HansException;
 import com.pepris.system.mapper.SysMenuMapper;
+import com.pepris.system.mapper.SysRoleMenuMapper;
 import com.pepris.system.utils.MenuHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,6 +21,8 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
 
     @Autowired
     private SysMenuMapper sysMenuMapper;
+    @Autowired
+    private SysRoleMenuMapper sysRoleMenuMapper;
 
     @Override
     //菜单列表。树形
@@ -29,7 +34,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
         return result;
     }
 
-    //删除菜单
+    // 删除菜单
     @Override
     public void removeMenuById(String id) {
         //查询当前删除菜单下面是否有子菜单
@@ -41,5 +46,25 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
             throw new HansException(201, "请先删除子菜单");
         }
         baseMapper.deleteById(id);
+    }
+
+    // 给角色分配菜单
+    @Override
+    public void doAssign(AssginMenuVo assginMenuVo) {
+        //根据角色id删除已分配的权限
+        QueryWrapper<SysRoleMenu> queryWrapper = new QueryWrapper<>();
+        QueryWrapper<SysRoleMenu> roleId = queryWrapper.eq("role_id", assginMenuVo.getRoleId());
+        sysRoleMenuMapper.delete(roleId);
+        //遍历菜单ID列表，一个个添加
+        for (String menuId : assginMenuVo.getMenuIdList()) {
+            SysRoleMenu sysRoleMenu = new SysRoleMenu();
+            sysRoleMenu.setRoleId(assginMenuVo.getRoleId());
+            sysRoleMenu.setMenuId(menuId);
+            //添加新权限
+            sysRoleMenuMapper.insert(sysRoleMenu);
+
+        }
+
+
     }
 }

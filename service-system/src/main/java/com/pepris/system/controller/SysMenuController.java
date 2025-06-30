@@ -2,7 +2,10 @@ package com.pepris.system.controller;
 
 import com.pepris.common.result.Result;
 import com.pepris.model.system.SysMenu;
+import com.pepris.model.vo.AssginMenuVo;
+import com.pepris.model.vo.AssginRoleVo;
 import com.pepris.system.service.SysMenuService;
+import com.pepris.system.service.SysRoleService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +20,8 @@ public class SysMenuController {
 
     @Autowired
     private SysMenuService sysMenuService;
+    @Autowired
+    private SysRoleService sysRoleService;
 
     @ApiOperation("获取菜单")
     @GetMapping("/findNodes")
@@ -60,6 +65,20 @@ public class SysMenuController {
             return Result.fail();
         }
 
+    }
+
+    @ApiOperation("根据角色获取菜单")
+    @GetMapping("/toAssign/{roleId}")
+    public Result toAssign(@PathVariable Long roleId){
+        List<SysMenu> list= sysRoleService.findSysMenuByRoleId(roleId);
+        return Result.ok(list);
+    }
+
+    @ApiOperation("给角色分配菜单")
+    @PostMapping("/doAssign")
+    public Result doAssign(@RequestBody AssginMenuVo assginMenuVo){
+        sysMenuService.doAssign(assginMenuVo);
+        return Result.ok();
     }
 
 
