@@ -8,6 +8,8 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.pepris.model.vo.SysRoleQueryVo;
 import com.pepris.model.vo.SysUserQueryVo;
 
+import java.util.Map;
+
 /**
  * <p>
  * 用户表 服务类
@@ -21,9 +23,12 @@ public interface SysUserService extends IService<SysUser> {
     IPage<SysUser> selectPage(Page<SysUser> pageParam, SysUserQueryVo userQueryVo);
 
     //更改用户状态
-    void updateStatus(Long id,Integer status);
+    void updateStatus(Long id, Integer status);
 
 
     //根据用户名称查询
     SysUser getUserInfoByName(String username);
+
+    // 获取用户信息
+    Map<String, Object> getUserInfo(String username);
 }

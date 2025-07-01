@@ -5,14 +5,24 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.pepris.model.system.SysUser;
+import com.pepris.model.vo.RouterVo;
 import com.pepris.model.vo.SysUserQueryVo;
 import com.pepris.system.mapper.SysUserMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Transactional
 @Service
 public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> implements SysUserService {
+
+    @Autowired
+    private SysMenuService sysMenuService;
 
     //条件分页查询
     //@Override
@@ -39,5 +49,26 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         queryWrapper.eq("username",username);
         SysUser sysUser = baseMapper.selectOne(queryWrapper);
         return sysUser;
+    }
+
+    // 获取用户信息
+    @Override
+    public Map<String, Object> getUserInfo(String username) {
+        //根据用户名称查询用户基本信息
+        SysUser sysUser = this.getUserInfoByName(username);
+        //根据userid查询菜单权限
+        List<RouterVo> routerVoList= sysMenuService.getUserMenuList(sysUser.getId());
+        //根据userid查询按钮权限
+         List<String> permList=sysMenuService.getUserButtonList(sysUser.getId());
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("username",username);
+        result.put("avatar", "https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif");
+        result.put("roles", "[admin]");
+        //菜单的权限数据
+        result.put("routers",null);
+        //按钮权限数据
+        result.put("buttons",null);
+        return result;
     }
 }

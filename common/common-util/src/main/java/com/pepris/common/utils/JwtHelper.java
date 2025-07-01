@@ -28,14 +28,14 @@ public class JwtHelper {
     }
 
     // 从token中获取userid
-    public static Long getUserId(String token) {
+    public static String getUserId(String token) {
         try {
             if (StringUtils.isEmpty(token)) return null;
 
             Jws<Claims> claimsJws = Jwts.parser().setSigningKey(tokenSignKey).parseClaimsJws(token);
             Claims claims = claimsJws.getBody();
-            Integer userId = (Integer) claims.get("userId");
-            return userId.longValue();
+            String userId = (String) claims.get("userId");
+            return userId;
         } catch (Exception e) {
             e.printStackTrace();
             return null;
