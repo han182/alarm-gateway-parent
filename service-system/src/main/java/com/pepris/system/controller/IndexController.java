@@ -24,7 +24,7 @@ public class IndexController {
     @Autowired
     private SysUserService sysUserService;
 
-    @PostMapping("/login")
+    @PostMapping("login")
     public Result login(@RequestBody LoginVo loginVo) {
         //根据用户名查询数据库
         SysUser sysUser = sysUserService.getUserInfoByName(loginVo.getUsername());
@@ -50,7 +50,7 @@ public class IndexController {
     }
 
     //获取用户信息
-    @GetMapping("/info")
+    @GetMapping("info")
     public Result info(HttpServletRequest request) {
         //获取请求头token字符串
         String token = request.getHeader("token");
@@ -64,7 +64,7 @@ public class IndexController {
         return Result.ok(map);
     }
 
-    @PostMapping("/logout")
+    @PostMapping("logout")
     public Result logout() {
         return Result.ok();
     }

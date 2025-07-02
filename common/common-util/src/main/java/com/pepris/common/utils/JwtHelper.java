@@ -34,7 +34,7 @@ public class JwtHelper {
 
             Jws<Claims> claimsJws = Jwts.parser().setSigningKey(tokenSignKey).parseClaimsJws(token);
             Claims claims = claimsJws.getBody();
-            String userId = (String) claims.get("userId");
+            String userId =  String.valueOf(claims.get("userId"));
             return userId;
         } catch (Exception e) {
             e.printStackTrace();
@@ -61,9 +61,13 @@ public class JwtHelper {
 
     //测试上面的方法用的
     public static void main(String[] args) {
-        String token = JwtHelper.createToken(1L, "admin");//"eyJhbGciOiJIUzUxMiIsInppcCI6IkdaSVAifQ.H4sIAAAAAAAAAKtWKi5NUrJSCjAK0A0Ndg1S0lFKrShQsjI0MzY2sDQ3MTbQUSotTi3yTFGyMjKEsP0Sc1OBWp6unfB0f7NSLQDxzD8_QwAAAA.2eCJdsJXOYaWFmPTJc8gl1YHTRl9DAeEJprKZn4IgJP9Fzo5fLddOQn1Iv2C25qMpwHQkPIGukTQtskWsNrnhQ";//JwtHelper.createToken(7L, "admin");
-        System.out.println(token);
-        System.out.println(JwtHelper.getUserId(token));
-        System.out.println(JwtHelper.getUsername(token));
+        String token = JwtHelper.createToken(1L, "admin");
+        System.out.println("Generated JWT token: " + token);
+
+        String userId = JwtHelper.getUserId(token);
+        System.out.println("User ID from token: " + userId);
+
+        String username = JwtHelper.getUsername(token);
+        System.out.println("Username from token: " + username);
     }
 }

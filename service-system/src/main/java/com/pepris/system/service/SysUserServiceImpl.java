@@ -12,10 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Transactional
 @Service
@@ -62,13 +59,13 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
          List<String> permList=sysMenuService.getUserButtonList(sysUser.getId());
 
         Map<String, Object> result = new HashMap<>();
-        result.put("username",username);
+        result.put("name",username);
         result.put("avatar", "https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif");
         result.put("roles", "[admin]");
         //菜单的权限数据
-        result.put("routers",null);
+        result.put("routers", routerVoList);
         //按钮权限数据
-        result.put("buttons",null);
+        result.put("buttons", permList);
         return result;
     }
 }
