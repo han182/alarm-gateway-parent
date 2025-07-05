@@ -12,6 +12,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -47,7 +48,7 @@ public class SysRoleController {
         SysRole role = sysRoleService.getById(id);
         return Result.ok(role);
     }
-
+    @PreAuthorize("hasAuthority('bnt.sysRole.add')")
     @ApiOperation(value = "新增角色")
     @PostMapping("/save")
     public Result save(@RequestBody SysRole sysRole) {
@@ -55,6 +56,7 @@ public class SysRoleController {
         return Result.ok();
     }
 
+    @PreAuthorize("hasAuthority('bnt.sysRole.update')")
     @ApiOperation(value = "修改角色")
     @PostMapping("/update")
     public Result update(@RequestBody SysRole sysRole) {
@@ -62,6 +64,7 @@ public class SysRoleController {
         return Result.ok();
     }
 
+    @PreAuthorize("hasAuthority('bnt.sysRole.remove')")
     @ApiOperation(value = "删除角色")
     @PostMapping("/remove/{id}")
     public Result delete(@PathVariable Long id) {
@@ -112,6 +115,7 @@ public class SysRoleController {
 
     @GetMapping("/{page}/{limit}")
     @ApiOperation(value = "条件分页查询")
+    @PreAuthorize("hasAnyAuthority('bnt.sysRole.list')")
     public Result index(
             @ApiParam(name = "page", value = "当前页码", required = true)
             @PathVariable

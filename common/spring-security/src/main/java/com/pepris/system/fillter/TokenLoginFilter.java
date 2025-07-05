@@ -1,5 +1,6 @@
 package com.pepris.system.fillter;
 
+import com.alibaba.fastjson.JSON;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pepris.common.result.Result;
 import com.pepris.common.result.ResultCodeEnum;
@@ -7,6 +8,8 @@ import com.pepris.common.utils.JwtHelper;
 import com.pepris.common.utils.ResponseUtil;
 import com.pepris.model.vo.LoginVo;
 import com.pepris.system.custom.CustomUser;
+import org.springframework.boot.autoconfigure.cache.CacheProperties;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -29,12 +32,15 @@ import java.util.Map;
  *
  */
 public class TokenLoginFilter extends UsernamePasswordAuthenticationFilter {
+
+    private RedisTemplate redisTemplate;
     //构造
-    public TokenLoginFilter(AuthenticationManager authenticationManager) {
+    public TokenLoginFilter(AuthenticationManager authenticationManager, RedisTemplate redisTemplate) {
         this.setAuthenticationManager(authenticationManager);
         this.setPostOnly(false);
         //指定登录接口及提交方式，可以指定任意路径
         this.setRequiresAuthenticationRequestMatcher(new AntPathRequestMatcher("/admin/system/index/login","POST"));
+        this.redisTemplate=redisTemplate;
     }
 
     /**
@@ -73,6 +79,8 @@ public class TokenLoginFilter extends UsernamePasswordAuthenticationFilter {
                                             Authentication auth) throws IOException, ServletException {
         CustomUser customUser = (CustomUser) auth.getPrincipal();
         String token = JwtHelper.createToken(Long.valueOf(customUser.getSysUser().getId()), customUser.getSysUser().getUsername());
+        //保存权限数据
+        redisTemplate.opsForValue().set(customUser.getUsername(), JSON.toJSONString(customUser.getAuthorities()));
 
         Map<String, Object> map = new HashMap<>();
         map.put("token", token);
